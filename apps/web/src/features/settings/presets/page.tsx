@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePresets, useDeletePreset, useShiftTypes } from '@/shared/hooks';
+import { usePresets, useDeletePreset } from '@/shared/hooks';
 import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card';
 import {
@@ -19,7 +19,7 @@ import { ApplyPresetDialog } from '@/features/settings/ui/ApplyPresetDialog';
 export default function PresetsPage() {
   const { data: presets = [], isLoading, error } = usePresets();
   const deleteMutation = useDeletePreset();
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [, setEditingId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [applyPresetId, setApplyPresetId] = useState<string | null>(null);
 

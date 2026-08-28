@@ -7,6 +7,7 @@ import {
   CreatePresetMeta,
   UpdatePresetMeta,
 } from '@shifts/types';
+import { toCamel, toSnake } from '@/shared/lib/transform';
 
 export const presetsApi = {
   async getAll(): Promise<Preset[]> {
@@ -15,7 +16,7 @@ export const presetsApi = {
       .select('*')
       .order('name');
     if (error) throw new Error(error.message);
-    return data as Preset[];
+    return toCamel<Preset[]>(data);
   },
 
   async getById(id: string): Promise<Preset> {
@@ -25,28 +26,28 @@ export const presetsApi = {
       .eq('id', id)
       .single();
     if (error) throw new Error(error.message);
-    return data as Preset;
+    return toCamel<Preset>(data);
   },
 
   async create(payload: CreatePreset): Promise<Preset> {
     const { data, error } = await supabase
       .from('presets')
-      .insert(payload)
+      .insert(toSnake(payload))
       .select()
       .single();
     if (error) throw new Error(error.message);
-    return data as Preset;
+    return toCamel<Preset>(data);
   },
 
   async update(id: string, payload: UpdatePreset): Promise<Preset> {
     const { data, error } = await supabase
       .from('presets')
-      .update(payload)
+      .update(toSnake(payload))
       .eq('id', id)
       .select()
       .single();
     if (error) throw new Error(error.message);
-    return data as Preset;
+    return toCamel<Preset>(data);
   },
 
   async delete(id: string): Promise<void> {
@@ -60,20 +61,21 @@ export const presetMetaApi = {
     const { data, error } = await supabase
       .from('preset_meta')
       .select('*')
-      .eq('presetId', presetId)
+      .eq('preset_id', presetId) // ← snake_case в запросе
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return data as PresetMeta | null;
+    return data ? toCamel<PresetMeta>(data) : null;
   },
 
   async upsert(payload: CreatePresetMeta): Promise<PresetMeta> {
+    // payload содержит camelCase, преобразуем в snake_case
     const { data, error } = await supabase
       .from('preset_meta')
-      .upsert(payload, { onConflict: 'presetId' })
+      .upsert(toSnake(payload), { onConflict: 'preset_id' })
       .select()
       .single();
     if (error) throw new Error(error.message);
-    return data as PresetMeta;
+    return toCamel<PresetMeta>(data);
   },
 
   async update(
@@ -82,19 +84,19 @@ export const presetMetaApi = {
   ): Promise<PresetMeta> {
     const { data, error } = await supabase
       .from('preset_meta')
-      .update(payload)
-      .eq('presetId', presetId)
+      .update(toSnake(payload))
+      .eq('preset_id', presetId)
       .select()
       .single();
     if (error) throw new Error(error.message);
-    return data as PresetMeta;
+    return toCamel<PresetMeta>(data);
   },
 
   async delete(presetId: string): Promise<void> {
     const { error } = await supabase
       .from('preset_meta')
       .delete()
-      .eq('presetId', presetId);
+      .eq('preset_id', presetId);
     if (error) throw new Error(error.message);
   },
 };

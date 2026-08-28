@@ -18,7 +18,6 @@ import { ShiftTypeForm } from '@/features/settings/ui/ShiftTypeForm';
 export default function ShiftTypesPage() {
   const { data: shiftTypes = [], isLoading, error } = useShiftTypes();
   const deleteMutation = useDeleteShiftType();
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const handleDelete = (id: string) => {
@@ -77,11 +76,7 @@ export default function ShiftTypesPage() {
             <div className="flex gap-2">
               <Dialog>
                 <DialogTrigger>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setEditingId(type.id)}
-                  >
+                  <Button variant="ghost" size="icon">
                     <Pencil className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
@@ -92,10 +87,9 @@ export default function ShiftTypesPage() {
                   <ShiftTypeForm
                     initialData={type}
                     onSuccess={() => {
-                      setEditingId(null);
                       toast.success('Тип смены обновлён');
                     }}
-                    onCancel={() => setEditingId(null)}
+                    onCancel={() => {}}
                   />
                 </DialogContent>
               </Dialog>

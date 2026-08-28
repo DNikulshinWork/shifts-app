@@ -21,6 +21,8 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.6",
+    "@types/camelcase-keys": "^5.1.5",
+    "@types/snakecase-keys": "^3.1.0",
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/ui": "^4.1.11",
     "husky": "^9.1.7",
@@ -34,6 +36,8 @@
     "typescript": "6.0.0"
   },
   "dependencies": {
-    "date-fns": "catalog:"
+    "camelcase-keys": "^10.0.2",
+    "date-fns": "catalog:",
+    "snakecase-keys": "^9.0.2"
   }
 }

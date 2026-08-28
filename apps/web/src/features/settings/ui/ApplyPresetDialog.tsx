@@ -22,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select';
-import { toast } from 'sonner';
 
 const applySchema = z.object({
   startDate: z

@@ -111,12 +111,16 @@ describe('CreateShiftSchema', () => {
 });
 
 describe('UpdateShiftSchema', () => {
-  it('should require id', () => {
+  it('should accept partial fields without id', () => {
     const data = {
-      id: '123e4567-e89b-12d3-a456-426614174001',
+      typeId: '123e4567-e89b-12d3-a456-426614174000',
       note: 'Updated note',
     };
     expect(() => UpdateShiftSchema.parse(data)).not.toThrow();
+  });
+
+  it('should accept empty object', () => {
+    expect(() => UpdateShiftSchema.parse({})).not.toThrow();
   });
 });
 

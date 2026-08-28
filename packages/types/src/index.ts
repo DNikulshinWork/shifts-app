@@ -57,7 +57,11 @@ export const CreateShiftSchema = ShiftSchema.omit({
   createdAt: true,
   updatedAt: true,
 });
-export const UpdateShiftSchema = ShiftSchema.partial().required({ id: true });
+export const UpdateShiftSchema = ShiftSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial();
 export type CreateShift = z.infer<typeof CreateShiftSchema>;
 export type UpdateShift = z.infer<typeof UpdateShiftSchema>;
 

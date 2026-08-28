@@ -115,7 +115,7 @@ export function PresetForm({
             <div key={field.id} className="flex items-center gap-2">
               <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
               <Select
-                value={field.id}
+                value={sequence[index] || ''}
                 onValueChange={(value) => {
                   if (value !== null) {
                     updateSequenceItem(index, value);
@@ -123,7 +123,18 @@ export function PresetForm({
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Выберите тип смены" />
+                  <span>
+                    {sequence[index]
+                      ? (() => {
+                          const found = shiftTypes.find(
+                            (t) => t.id === sequence[index]
+                          );
+                          return found
+                            ? `${found.emoji} ${found.name}`
+                            : 'Выберите тип смены';
+                        })()
+                      : 'Выберите тип смены'}
+                  </span>
                 </SelectTrigger>
                 <SelectContent>
                   {shiftTypes.map((type) => (

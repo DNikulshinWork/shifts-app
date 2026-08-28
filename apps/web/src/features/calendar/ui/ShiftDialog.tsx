@@ -3,7 +3,7 @@
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Shift, ShiftType } from '@shifts/types';
+import { Shift } from '@shifts/types';
 import {
   useCreateShift,
   useUpdateShift,
@@ -23,8 +23,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectTrigger
 } from '@/shared/ui/select';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -134,10 +133,21 @@ export function ShiftDialog({
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите тип" />
+                <span>
+                  {selectedTypeId
+                    ? (() => {
+                        const found = shiftTypes.find(
+                          (t) => t.id === selectedTypeId
+                        );
+                        return found
+                          ? `${found.emoji} ${found.name}`
+                          : 'Выберите тип';
+                      })()
+                    : 'Выберите тип'}
+                </span>
               </SelectTrigger>
               <SelectContent>
-                {shiftTypes.map((type: ShiftType) => (
+                {shiftTypes.map((type) => (
                   <SelectItem key={type.id} value={type.id}>
                     {type.emoji} {type.name}
                   </SelectItem>

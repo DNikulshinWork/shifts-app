@@ -84,9 +84,8 @@ export const PresetMetaSchema = z.object({
 export type PresetMeta = z.infer<typeof PresetMetaSchema>;
 
 // ─── Схемы для форм метаданных ────────────────────────────────
-export const CreatePresetMetaSchema = PresetMetaSchema.omit({
-  presetId: true,
-});
+export const CreatePresetMetaSchema = PresetMetaSchema;
+
 export const UpdatePresetMetaSchema = PresetMetaSchema.partial().required({
   presetId: true,
 });

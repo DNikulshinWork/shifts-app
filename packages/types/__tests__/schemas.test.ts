@@ -194,11 +194,11 @@ describe('PresetMetaSchema', () => {
 });
 
 describe('CreatePresetMetaSchema', () => {
-  it('should allow missing presetId', () => {
+  it('should require presetId', () => {
     const data = {
+      presetId: '123e4567-e89b-12d3-a456-426614174002',
       referenceDate: '2025-01-01',
       referenceIndex: 0,
-      dirty: false,
     };
     expect(() => CreatePresetMetaSchema.parse(data)).not.toThrow();
   });

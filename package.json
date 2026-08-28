@@ -1,0 +1,36 @@
+{
+  "name": "shifts-app",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.14.0",
+  "scripts": {
+    "dev": "pnpm --filter @shifts/web dev",
+    "dev:clean": "pnpm --filter @shifts/web exec rm -rf .next && pnpm --filter @shifts/web dev",
+    "build": "pnpm --filter @shifts/web build",
+    "build:gh-pages": "NEXT_PUBLIC_BASE_PATH=/shifts-app pnpm --filter @shifts/web build",
+    "clean": "pnpm --filter @shifts/web exec rm -rf .next out",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "prepare": "husky",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "format": "prettier --write .",
+    "verify": "pnpm run lint && pnpm run format && pnpm run typecheck && pnpm run test"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.6",
+    "@vitejs/plugin-react": "^6.1.1",
+    "@vitest/ui": "^4.1.11",
+    "husky": "^9.1.7",
+    "jsdom": "^30.0.1",
+    "lint-staged": "^17.4.1",
+    "prettier": "^3.9.6",
+    "typescript": "catalog:",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "typescript": "6.0.0"
+  }
+}

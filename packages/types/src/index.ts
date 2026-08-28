@@ -22,10 +22,20 @@ export const CreateShiftTypeSchema = ShiftTypeSchema.omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).required({
+  name: true,
+  color: true,
+  emoji: true,
+  durationHours: true,
+  category: true,
 });
-export const UpdateShiftTypeSchema = ShiftTypeSchema.partial().required({
+
+export const UpdateShiftTypeSchema = ShiftTypeSchema.omit({
   id: true,
-});
+  createdAt: true,
+  updatedAt: true,
+}).partial();
+
 export type CreateShiftType = z.infer<typeof CreateShiftTypeSchema>;
 export type UpdateShiftType = z.infer<typeof UpdateShiftTypeSchema>;
 

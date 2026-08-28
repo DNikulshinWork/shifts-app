@@ -58,25 +58,13 @@ describe('CreateShiftTypeSchema', () => {
 });
 
 describe('UpdateShiftTypeSchema', () => {
-  it('should require id', () => {
-    const data = {
-      id: '123e4567-e89b-12d3-a456-426614174000',
-      name: 'Updated',
-    };
+  it('should accept partial fields without id', () => {
+    const data = { name: 'New Name' };
     expect(() => UpdateShiftTypeSchema.parse(data)).not.toThrow();
   });
 
-  it('should allow partial fields', () => {
-    const data = {
-      id: '123e4567-e89b-12d3-a456-426614174000',
-      color: '#00ff00',
-    };
-    expect(() => UpdateShiftTypeSchema.parse(data)).not.toThrow();
-  });
-
-  it('should reject without id', () => {
-    const data = { name: 'No ID' };
-    expect(() => UpdateShiftTypeSchema.parse(data)).toThrow();
+  it('should accept empty object', () => {
+    expect(() => UpdateShiftTypeSchema.parse({})).not.toThrow();
   });
 });
 

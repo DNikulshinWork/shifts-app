@@ -43,7 +43,7 @@ catalogs:
       specifier: ^4.0.0
       version: 4.4.3
     zustand:
-      specifier: ^5.0.0
+      specifier: 5.0.15
       version: 5.0.15
 
 importers:
@@ -58,6 +58,9 @@ importers:
       snakecase-keys:
         specifier: ^9.0.2
         version: 9.0.2
+      zustand:
+        specifier: 'catalog:'
+        version: 5.0.15(@types/react@19.2.18)(react@19.2.8)(use-sync-external-store@1.6.0(react@19.2.8))
     devDependencies:
       '@testing-library/jest-dom':
         specifier: ^7.0.1

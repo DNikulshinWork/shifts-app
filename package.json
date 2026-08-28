@@ -38,6 +38,7 @@
   "dependencies": {
     "camelcase-keys": "^10.0.2",
     "date-fns": "catalog:",
-    "snakecase-keys": "^9.0.2"
+    "snakecase-keys": "^9.0.2",
+    "zustand": "catalog:"
   }
 }

@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from '@tanstack/react-query';
 import { shiftsApi } from '@/shared/api/shifts';
 import { CreateShift, UpdateShift } from '@shifts/types';
 
@@ -16,9 +21,12 @@ export function useShiftsByDateRange(startDate: string, endDate: string) {
     queryKey: shiftsKeys.dateRange(startDate, endDate),
     queryFn: () => shiftsApi.getByDateRange(startDate, endDate),
     enabled: !!startDate && !!endDate,
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000,
   });
 }
 
+// остальные хуки без изменений
 export function useShiftsByDate(date: string) {
   return useQuery({
     queryKey: shiftsKeys.date(date),

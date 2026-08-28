@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Preset, ApplyMode } from '@shifts/types';
@@ -60,8 +60,8 @@ export function ApplyPresetDialog({
 
   const {
     register,
+    control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<ApplyFormData>({
     resolver: zodResolver(applySchema),
@@ -72,8 +72,8 @@ export function ApplyPresetDialog({
     },
   });
 
-  const startDate = watch('startDate');
-  const endDate = watch('endDate');
+  const startDate = useWatch({ control, name: 'startDate' });
+  const endDate = useWatch({ control, name: 'endDate' });
 
   const onSubmit = async (data: ApplyFormData) => {
     setIsSubmitting(true);
@@ -87,6 +87,7 @@ export function ApplyPresetDialog({
       onSuccess?.();
       onOpenChange(false);
     } catch (error) {
+      console.error('Apply preset error:', error);
       onError?.();
     } finally {
       setIsSubmitting(false);

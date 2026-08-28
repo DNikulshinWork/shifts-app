@@ -2,7 +2,8 @@
 
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreatePresetSchema, CreatePreset, Preset } from '@shifts/types';
+import { z } from 'zod';
+import { CreatePreset, Preset } from '@shifts/types';
 import {
   useCreatePreset,
   useUpdatePreset,
@@ -27,6 +28,18 @@ interface PresetFormProps {
   onCancel?: () => void;
 }
 
+type FormValues = {
+  name: string;
+  sequence: { id: string }[];
+};
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Название обязательно'),
+  sequence: z
+    .array(z.object({ id: z.string().uuid() }))
+    .min(1, 'Добавьте хотя бы один тип смены'),
+});
+
 export function PresetForm({
   initialData,
   onSuccess,
@@ -43,19 +56,13 @@ export function PresetForm({
     control,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
-  } = useForm<CreatePreset>({
-    resolver: zodResolver(CreatePresetSchema),
-    defaultValues: initialData
-      ? {
-          name: initialData.name,
-          sequence: initialData.sequence,
-        }
-      : {
-          name: '',
-          sequence: [],
-        },
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: initialData?.name || '',
+      sequence: initialData?.sequence.map((id) => ({ id })) || [],
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -63,29 +70,30 @@ export function PresetForm({
     name: 'sequence',
   });
 
-  const sequence = watch('sequence');
-
   const addShiftType = () => {
     if (shiftTypes.length > 0) {
-      append(shiftTypes[0].id);
+      append({ id: shiftTypes[0].id });
     }
   };
 
-  const updateSequence = (index: number, value: string) => {
-    const newSequence = [...sequence];
-    newSequence[index] = value;
-    setValue('sequence', newSequence);
+  const updateSequenceItem = (index: number, value: string) => {
+    setValue(`sequence.${index}.id`, value);
   };
 
-  const onSubmit = async (data: CreatePreset) => {
+  const onSubmit = async (data: FormValues) => {
+    const payload: CreatePreset = {
+      name: data.name,
+      sequence: data.sequence.map((item) => item.id),
+    };
     try {
       if (isEdit && initialData) {
-        await updateMutation.mutateAsync({ id: initialData.id, payload: data });
+        await updateMutation.mutateAsync({ id: initialData.id, payload });
       } else {
-        await createMutation.mutateAsync(data);
+        await createMutation.mutateAsync(payload);
       }
       onSuccess?.();
     } catch (error) {
+      console.error('Preset form error:', error);
       toast.error(isEdit ? 'Ошибка обновления' : 'Ошибка создания');
     }
   };
@@ -107,8 +115,12 @@ export function PresetForm({
             <div key={field.id} className="flex items-center gap-2">
               <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
               <Select
-                value={sequence[index] || ''}
-                onValueChange={(value) => updateSequence(index, value)}
+                value={field.id}
+                onValueChange={(value) => {
+                  if (value !== null) {
+                    updateSequenceItem(index, value);
+                  }
+                }}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Выберите тип смены" />

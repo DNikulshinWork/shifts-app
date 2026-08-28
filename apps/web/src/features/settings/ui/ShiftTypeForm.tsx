@@ -63,6 +63,7 @@ export function ShiftTypeForm({
       }
       onSuccess?.();
     } catch (error) {
+      console.error('Shift type form error:', error);
       toast.error(isEdit ? 'Ошибка обновления' : 'Ошибка создания');
     }
   };

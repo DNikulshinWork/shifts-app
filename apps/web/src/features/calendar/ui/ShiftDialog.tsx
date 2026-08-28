@@ -23,7 +23,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger
+  SelectTrigger,
 } from '@/shared/ui/select';
 import { toast } from 'sonner';
 import { format } from 'date-fns';

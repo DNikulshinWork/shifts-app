@@ -17,7 +17,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from '@/shared/ui/select';
 import { toast } from 'sonner';
 import { Plus, Trash2, GripVertical } from 'lucide-react';

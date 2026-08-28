@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { CreatePreset, Preset } from '@shifts/types';
@@ -69,6 +69,8 @@ export function PresetForm({
     name: 'sequence',
   });
 
+  const sequence = useWatch({ control, name: 'sequence' });
+
   const addShiftType = () => {
     if (shiftTypes.length > 0) {
       append({ id: shiftTypes[0].id });
@@ -114,7 +116,7 @@ export function PresetForm({
             <div key={field.id} className="flex items-center gap-2">
               <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
               <Select
-                value={sequence[index] || ''}
+                value={sequence[index]?.id || ''}
                 onValueChange={(value) => {
                   if (value !== null) {
                     updateSequenceItem(index, value);
@@ -123,10 +125,10 @@ export function PresetForm({
               >
                 <SelectTrigger className="w-full">
                   <span>
-                    {sequence[index]
+                    {sequence[index]?.id
                       ? (() => {
                           const found = shiftTypes.find(
-                            (t) => t.id === sequence[index]
+                            (t) => t.id === sequence[index].id
                           );
                           return found
                             ? `${found.emoji} ${found.name}`

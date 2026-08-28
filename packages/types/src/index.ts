@@ -78,7 +78,11 @@ export const CreatePresetSchema = PresetSchema.omit({
   createdAt: true,
   updatedAt: true,
 });
-export const UpdatePresetSchema = PresetSchema.partial().required({ id: true });
+export const UpdatePresetSchema = PresetSchema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).partial();
 export type CreatePreset = z.infer<typeof CreatePresetSchema>;
 export type UpdatePreset = z.infer<typeof UpdatePresetSchema>;
 

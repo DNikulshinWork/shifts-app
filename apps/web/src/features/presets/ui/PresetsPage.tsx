@@ -13,13 +13,12 @@ import {
 } from '@/shared/ui/dialog';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus, Play } from 'lucide-react';
-import { PresetForm } from '@/features/settings/ui/PresetForm';
-import { ApplyPresetDialog } from '@/features/settings/ui/ApplyPresetDialog';
+import { PresetForm } from './PresetForm';
+import { ApplyPresetDialog } from './ApplyPresetDialog';
 
-export default function PresetsPage() {
+export function PresetsPage() {
   const { data: presets = [], isLoading, error } = usePresets();
   const deleteMutation = useDeletePreset();
-  const [, setEditingId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [applyPresetId, setApplyPresetId] = useState<string | null>(null);
 
@@ -96,11 +95,7 @@ export default function PresetsPage() {
               </Button>
               <Dialog>
                 <DialogTrigger>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setEditingId(preset.id)}
-                  >
+                  <Button variant="ghost" size="icon">
                     <Pencil className="h-4 w-4" />
                   </Button>
                 </DialogTrigger>
@@ -110,11 +105,8 @@ export default function PresetsPage() {
                   </DialogHeader>
                   <PresetForm
                     initialData={preset}
-                    onSuccess={() => {
-                      setEditingId(null);
-                      toast.success('Пресет обновлён');
-                    }}
-                    onCancel={() => setEditingId(null)}
+                    onSuccess={() => toast.success('Пресет обновлён')}
+                    onCancel={() => {}}
                   />
                 </DialogContent>
               </Dialog>

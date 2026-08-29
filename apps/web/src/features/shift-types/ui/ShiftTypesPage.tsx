@@ -13,9 +13,9 @@ import {
 } from '@/shared/ui/dialog';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus } from 'lucide-react';
-import { ShiftTypeForm } from '@/features/settings/ui/ShiftTypeForm';
+import { ShiftTypeForm } from './ShiftTypeForm';
 
-export default function ShiftTypesPage() {
+export function ShiftTypesPage() {
   const { data: shiftTypes = [], isLoading, error } = useShiftTypes();
   const deleteMutation = useDeleteShiftType();
   const [isCreateOpen, setIsCreateOpen] = useState(false);

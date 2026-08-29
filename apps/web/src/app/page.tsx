@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CalendarGrid } from '@/features/calendar/ui/CalendarGrid';
@@ -8,7 +8,7 @@ import { ShiftDialog } from '@/features/calendar/ui/ShiftDialog';
 import { Button } from '@/shared/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShiftsByDateRange } from '@/shared/hooks';
-import { useAppStore } from '@/stores/appStore';
+import { useAppStore } from '@/shared/stores/appStore';
 import { usePrefetchMonths } from '@/shared/hooks/usePrefetchMonths';
 import { Shift } from '@shifts/types';
 

@@ -6,34 +6,43 @@ import { presetsKeys } from './usePresets';
 import {
   startOfMonth,
   endOfMonth,
+  startOfWeek,
+  endOfWeek,
   format,
   addMonths,
   subMonths,
 } from 'date-fns';
-import { shiftTypesApi } from '../api/shiftTypes';
-import { presetsApi } from '../api/presets';
-import { shiftsApi } from '../api/shifts';
+import { ru } from 'date-fns/locale';
+import { shiftsApi } from '@/shared/api/shifts';
+import { shiftTypesApi } from '@/shared/api/shiftTypes';
+import { presetsApi } from '@/shared/api/presets';
 
 export function usePrefetchMonths(viewDate: Date) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Предзагружаем текущий месяц, предыдущий и следующий
     const months = [viewDate, subMonths(viewDate, 1), addMonths(viewDate, 1)];
 
-    // Для каждого месяца запускаем prefetch
     months.forEach((date) => {
-      const start = format(startOfMonth(date), 'yyyy-MM-dd');
-      const end = format(endOfMonth(date), 'yyyy-MM-dd');
+      const monthStart = startOfMonth(date);
+      const monthEnd = endOfMonth(date);
+      const start = format(
+        startOfWeek(monthStart, { locale: ru, weekStartsOn: 1 }),
+        'yyyy-MM-dd'
+      );
+      const end = format(
+        endOfWeek(monthEnd, { locale: ru, weekStartsOn: 1 }),
+        'yyyy-MM-dd'
+      );
 
       queryClient.prefetchQuery({
         queryKey: shiftsKeys.dateRange(start, end),
         queryFn: () => shiftsApi.getByDateRange(start, end),
-        staleTime: 5 * 60 * 1000, // 5 минут
+        staleTime: 5 * 60 * 1000,
       });
     });
 
-    // Также предзагружаем типы смен и пресеты (они редко меняются)
+    // Предзагрузка типов смен и пресетов (они редко меняются)
     queryClient.prefetchQuery({
       queryKey: shiftTypesKeys.all,
       queryFn: shiftTypesApi.getAll,

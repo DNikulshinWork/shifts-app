@@ -1,7 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { format, startOfMonth, endOfMonth } from 'date-fns';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+} from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { CalendarGrid } from '@/features/calendar/ui/CalendarGrid';
 import { ShiftDialog } from '@/features/calendar/ui/ShiftDialog';
@@ -17,10 +23,19 @@ export default function HomePage() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editingShift, setEditingShift] = useState<Shift | null>(null);
 
-  const startDate = format(startOfMonth(viewDate), 'yyyy-MM-dd');
-  const endDate = format(endOfMonth(viewDate), 'yyyy-MM-dd');
+  // Расширенный диапазон: от первого дня недели (понедельник) до последнего (воскресенье)
+  const monthStart = startOfMonth(viewDate);
+  const monthEnd = endOfMonth(viewDate);
+  const startDate = format(
+    startOfWeek(monthStart, { locale: ru, weekStartsOn: 1 }),
+    'yyyy-MM-dd'
+  );
+  const endDate = format(
+    endOfWeek(monthEnd, { locale: ru, weekStartsOn: 1 }),
+    'yyyy-MM-dd'
+  );
 
-  // Предзагрузка соседних месяцев
+  // Предзагрузка соседних месяцев (использует расширенные диапазоны)
   usePrefetchMonths(viewDate);
 
   const { data: shifts = [], isLoading } = useShiftsByDateRange(

@@ -37,12 +37,14 @@ export function ShiftTypesPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Типы смен</h1>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Добавить
-            </Button>
-          </DialogTrigger>
+          <DialogTrigger
+            render={
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Добавить
+              </Button>
+            }
+          />
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Новый тип смены</DialogTitle>
@@ -75,20 +77,20 @@ export function ShiftTypesPage() {
             </div>
             <div className="flex gap-2">
               <Dialog>
-                <DialogTrigger>
-                  <Button variant="ghost" size="icon">
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
+                <DialogTrigger
+                  render={
+                    <Button variant="ghost" size="icon">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  }
+                />
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Редактировать тип смены</DialogTitle>
                   </DialogHeader>
                   <ShiftTypeForm
                     initialData={type}
-                    onSuccess={() => {
-                      toast.success('Тип смены обновлён');
-                    }}
+                    onSuccess={() => toast.success('Тип смены обновлён')}
                     onCancel={() => {}}
                   />
                 </DialogContent>

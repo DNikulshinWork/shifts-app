@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { usePresets, useDeletePreset } from '@/shared/hooks';
+import { usePresets, useDeletePreset, useShiftTypes } from '@/shared/hooks';
 import { Button } from '@/shared/ui/button';
 import { Card } from '@/shared/ui/card';
 import {
@@ -18,6 +18,7 @@ import { ApplyPresetDialog } from './ApplyPresetDialog';
 
 export function PresetsPage() {
   const { data: presets = [], isLoading, error } = usePresets();
+  const { data: shiftTypes = [] } = useShiftTypes();
   const deleteMutation = useDeletePreset();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [applyPresetId, setApplyPresetId] = useState<string | null>(null);
@@ -31,6 +32,11 @@ export function PresetsPage() {
     }
   };
 
+  const getShiftTypeLabel = (typeId: string) => {
+    const type = shiftTypes.find((t) => t.id === typeId);
+    return type ? `${type.emoji} ${type.name}` : typeId.slice(0, 4) + '...';
+  };
+
   if (isLoading) return <div className="p-8">Загрузка...</div>;
   if (error) return <div className="p-8 text-destructive">Ошибка загрузки</div>;
 
@@ -41,12 +47,14 @@ export function PresetsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Пресеты смен</h1>
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogTrigger>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Создать пресет
-            </Button>
-          </DialogTrigger>
+          <DialogTrigger
+            render={
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Создать пресет
+              </Button>
+            }
+          />
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>Новый пресет</DialogTitle>
@@ -63,64 +71,76 @@ export function PresetsPage() {
       </div>
 
       <div className="grid gap-3">
-        {presets.map((preset) => (
-          <Card
-            key={preset.id}
-            className="flex items-center justify-between p-4"
-          >
-            <div>
-              <h3 className="font-medium">{preset.name}</h3>
-              <div className="flex gap-1 mt-1">
-                {preset.sequence.map((typeId, idx) => (
-                  <span
-                    key={idx}
-                    className="text-xs bg-muted px-2 py-0.5 rounded"
-                  >
-                    {typeId.slice(0, 4)}...
-                  </span>
-                ))}
+        {presets.map((preset) => {
+          const displayTypes = preset.sequence.slice(0, 4);
+          const remaining = preset.sequence.length - 4;
+
+          return (
+            <Card
+              key={preset.id}
+              className="flex items-center justify-between p-4"
+            >
+              <div>
+                <h3 className="font-medium">{preset.name}</h3>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {displayTypes.map((typeId, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs bg-muted px-2 py-0.5 rounded whitespace-nowrap"
+                    >
+                      {getShiftTypeLabel(typeId)}
+                    </span>
+                  ))}
+                  {remaining > 0 && (
+                    <span className="text-xs text-muted-foreground px-2 py-0.5">
+                      +{remaining}
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {preset.sequence.length} типов смен
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                {preset.sequence.length} типов смен
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setApplyPresetId(preset.id)}
-              >
-                <Play className="h-4 w-4 mr-1" />
-                Применить
-              </Button>
-              <Dialog>
-                <DialogTrigger>
-                  <Button variant="ghost" size="icon">
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Редактировать пресет</DialogTitle>
-                  </DialogHeader>
-                  <PresetForm
-                    initialData={preset}
-                    onSuccess={() => toast.success('Пресет обновлён')}
-                    onCancel={() => {}}
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setApplyPresetId(preset.id)}
+                >
+                  <Play className="h-4 w-4 mr-1" />
+                  Применить
+                </Button>
+                <Dialog>
+                  <DialogTrigger
+                    render={
+                      <Button variant="ghost" size="icon">
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    }
                   />
-                </DialogContent>
-              </Dialog>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-destructive hover:text-destructive"
-                onClick={() => handleDelete(preset.id)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </Card>
-        ))}
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Редактировать пресет</DialogTitle>
+                    </DialogHeader>
+                    <PresetForm
+                      initialData={preset}
+                      onSuccess={() => toast.success('Пресет обновлён')}
+                      onCancel={() => {}}
+                    />
+                  </DialogContent>
+                </Dialog>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() => handleDelete(preset.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </Card>
+          );
+        })}
       </div>
 
       {selectedPreset && (

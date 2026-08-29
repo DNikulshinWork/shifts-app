@@ -6,22 +6,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Preset, ApplyMode } from '@shifts/types';
 import { useApplyPreset } from '@/shared/hooks';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui';
+import { Button } from '@/shared/ui';
+import { Input } from '@/shared/ui';
+import { Label } from '@/shared/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/shared/ui/select';
+} from '@/shared/ui';
 
 const applySchema = z.object({
   startDate: z

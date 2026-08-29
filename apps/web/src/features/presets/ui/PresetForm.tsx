@@ -9,15 +9,10 @@ import {
   useUpdatePreset,
   useShiftTypes,
 } from '@/shared/hooks';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@/shared/ui/select';
+import { Button } from '@/shared/ui';
+import { Input } from '@/shared/ui';
+import { Label } from '@/shared/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui';
 import { toast } from 'sonner';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 

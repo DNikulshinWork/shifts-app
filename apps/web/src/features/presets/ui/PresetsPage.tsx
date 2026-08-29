@@ -2,15 +2,15 @@
 
 import { useState } from 'react';
 import { usePresets, useDeletePreset, useShiftTypes } from '@/shared/hooks';
-import { Button } from '@/shared/ui/button';
-import { Card } from '@/shared/ui/card';
+import { Button } from '@/shared/ui';
+import { Card } from '@/shared/ui';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/shared/ui/dialog';
+} from '@/shared/ui';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus, Play } from 'lucide-react';
 import { PresetForm } from './PresetForm';

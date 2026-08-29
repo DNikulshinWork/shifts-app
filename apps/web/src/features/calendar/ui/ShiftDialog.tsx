@@ -10,21 +10,11 @@ import {
   useDeleteShift,
   useShiftTypes,
 } from '@/shared/hooks';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/shared/ui/dialog';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@/shared/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui';
+import { Button } from '@/shared/ui';
+import { Input } from '@/shared/ui';
+import { Label } from '@/shared/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/shared/ui';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';

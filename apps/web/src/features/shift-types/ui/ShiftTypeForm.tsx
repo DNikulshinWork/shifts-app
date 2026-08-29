@@ -8,9 +8,9 @@ import {
   ShiftType,
 } from '@shifts/types';
 import { useCreateShiftType, useUpdateShiftType } from '@/shared/hooks';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
+import { Button } from '@/shared/ui';
+import { Input } from '@/shared/ui';
+import { Label } from '@/shared/ui';
 import { toast } from 'sonner';
 
 interface ShiftTypeFormProps {

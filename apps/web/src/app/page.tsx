@@ -11,7 +11,7 @@ import {
 import { ru } from 'date-fns/locale';
 import { CalendarGrid } from '@/features/calendar/ui/CalendarGrid';
 import { ShiftDialog } from '@/features/calendar/ui/ShiftDialog';
-import { Button } from '@/shared/ui/button';
+import { Button } from '@/shared/ui';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useShiftsByDateRange } from '@/shared/hooks';
 import { useAppStore } from '@/shared/stores/appStore';

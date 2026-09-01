@@ -39,20 +39,21 @@
 
 ## 🏗️ Архитектура
 
-Проект следует принципам **Evolutionary Design (ED) Microservices Monorepo Pattern**.
+Проект следует принципам **Evolutionary Design (ED) Microservices Monorepo Pattern** — подходу, при котором структура строится вокруг ответственности, а не технических типов файлов.
 
-> **Подробное описание архитектуры и правил организации кода доступно в [Wiki → ED-архитектура](https://github.com/DNikulshinWork/shifts-app/wiki/ED-архитектура).**
+> **Подробное описание архитектуры и правил организации кода доступно в [Wiki → ED Pattern Overview](https://github.com/DNikulshin/DNikulshin/wiki/01-Pattern-Overview).**
 
-Краткая структура:
+Краткая структура проекта:
 
 ````text
 apps/web/               # Основное Next.js приложение
 ├── src/
-│   ├── app/            # Маршруты и композиция
-│   ├── features/       # Функциональные модули
-│   └── shared/         # Общий фундамент
+│   ├── app/            # Маршруты и композиция (App Router)
+│   ├── features/       # Самостоятельные функциональные модули
+│   └── shared/         # Общий фундамент (UI, API, хуки, хранилища)
 └── ...
-packages/types/          # Общие типы и схемы
+packages/types/          # Общие типы и Zod-схемы
+db/                      # SQL-скрипты для базы данных
 
 ## 📦 Установка и запуск
 

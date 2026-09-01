@@ -17,6 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui';
+import { toast } from 'sonner';
+import { previewPreset, Conflict } from '@/shared/lib/applyPreset';
+import { format, parseISO } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 const applySchema = z.object({
   startDate: z
@@ -51,6 +55,16 @@ export function ApplyPresetDialog({
 }: ApplyPresetDialogProps) {
   const applyMutation = useApplyPreset();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
+  const [conflicts, setConflicts] = useState<Conflict[]>([]);
+  const [previewData, setPreviewData] = useState<{
+    totalDays: number;
+    occupiedDays: number;
+    emptyDays: number;
+  } | null>(null);
+  const [conflictAction, setConflictAction] = useState<
+    'overwrite' | 'skip' | 'cancel'
+  >('overwrite');
 
   const {
     register,
@@ -68,6 +82,32 @@ export function ApplyPresetDialog({
 
   const startDate = useWatch({ control, name: 'startDate' });
   const endDate = useWatch({ control, name: 'endDate' });
+  const mode = useWatch({ control, name: 'mode' });
+
+  const handlePreview = async () => {
+    if (!startDate || !endDate || new Date(startDate) > new Date(endDate))
+      return;
+
+    setIsPreviewing(true);
+    try {
+      const result = await previewPreset({
+        preset,
+        startDate,
+        endDate,
+        mode,
+      });
+      setConflicts(result.conflicts);
+      setPreviewData({
+        totalDays: result.totalDays,
+        occupiedDays: result.occupiedDays,
+        emptyDays: result.emptyDays,
+      });
+    } catch (error) {
+      toast.error('Ошибка при предпросмотре');
+    } finally {
+      setIsPreviewing(false);
+    }
+  };
 
   const onSubmit = async (data: ApplyFormData) => {
     setIsSubmitting(true);
@@ -77,11 +117,11 @@ export function ApplyPresetDialog({
         startDate: data.startDate,
         endDate: data.endDate,
         mode: data.mode,
+        onConflictResolve: async () => conflictAction,
       });
       onSuccess?.();
       onOpenChange(false);
     } catch (error) {
-      console.error('Apply preset error:', error);
       onError?.();
     } finally {
       setIsSubmitting(false);
@@ -90,29 +130,32 @@ export function ApplyPresetDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Применить пресет: {preset.name}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="startDate">Начальная дата</Label>
-            <Input id="startDate" type="date" {...register('startDate')} />
-            {errors.startDate && (
-              <p className="text-sm text-destructive">
-                {errors.startDate.message}
-              </p>
-            )}
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="endDate">Конечная дата</Label>
-            <Input id="endDate" type="date" {...register('endDate')} />
-            {errors.endDate && (
-              <p className="text-sm text-destructive">
-                {errors.endDate.message}
-              </p>
-            )}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate">Начальная дата</Label>
+              <Input id="startDate" type="date" {...register('startDate')} />
+              {errors.startDate && (
+                <p className="text-sm text-destructive">
+                  {errors.startDate.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="endDate">Конечная дата</Label>
+              <Input id="endDate" type="date" {...register('endDate')} />
+              {errors.endDate && (
+                <p className="text-sm text-destructive">
+                  {errors.endDate.message}
+                </p>
+              )}
+            </div>
           </div>
 
           {startDate && endDate && new Date(startDate) > new Date(endDate) && (
@@ -124,10 +167,12 @@ export function ApplyPresetDialog({
           <div className="space-y-2">
             <Label htmlFor="mode">Режим применения</Label>
             <Select
-              defaultValue="overwrite"
-              onValueChange={(value) =>
-                register('mode').onChange({ target: { value } })
-              }
+              value={mode}
+              onValueChange={(value) => {
+                if (value !== null) {
+                  register('mode').onChange({ target: { value } });
+                }
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Выберите режим" />
@@ -149,6 +194,84 @@ export function ApplyPresetDialog({
             )}
           </div>
 
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handlePreview}
+              disabled={isPreviewing}
+            >
+              {isPreviewing ? 'Загрузка...' : 'Предпросмотр'}
+            </Button>
+          </div>
+
+          {previewData && (
+            <div className="bg-muted p-3 rounded-md space-y-1 text-sm">
+              <div>
+                Всего дней:{' '}
+                <span className="font-medium">{previewData.totalDays}</span>
+              </div>
+              <div>
+                Свободных дней:{' '}
+                <span className="font-medium text-green-600">
+                  {previewData.emptyDays}
+                </span>
+              </div>
+              <div>
+                Занятых дней:{' '}
+                <span className="font-medium text-orange-600">
+                  {previewData.occupiedDays}
+                </span>
+              </div>
+              {conflicts.length > 0 && (
+                <div className="mt-2 pt-2 border-t border-border">
+                  <div className="font-medium text-destructive">
+                    Обнаружены конфликты:
+                  </div>
+                  <div className="max-h-32 overflow-y-auto space-y-1">
+                    {conflicts.map((c) => (
+                      <div
+                        key={c.date}
+                        className="text-xs flex justify-between"
+                      >
+                        <span>
+                          {format(parseISO(c.date), 'd MMM', { locale: ru })}
+                        </span>
+                        <span>занято → {c.proposedTypeId.slice(0, 4)}...</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-2">
+                    <Label>Действие при конфликтах:</Label>
+                    <Select
+                      value={conflictAction}
+                      onValueChange={(value) => {
+                        if (value !== null) {
+                          setConflictAction(value);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="overwrite">
+                          Перезаписать все
+                        </SelectItem>
+                        <SelectItem value="skip">
+                          Пропустить занятые дни
+                        </SelectItem>
+                        <SelectItem value="cancel">
+                          Отменить применение
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="flex justify-end gap-2 pt-4">
             <Button
               type="button"
@@ -158,7 +281,7 @@ export function ApplyPresetDialog({
               Отмена
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              Применить
+              {isSubmitting ? 'Применение...' : 'Применить'}
             </Button>
           </div>
         </form>

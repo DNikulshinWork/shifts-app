@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { applyPreset } from '@/shared/lib/applyPreset';
+import { applyPreset, Conflict } from '@/shared/lib/applyPreset';
 import { ApplyMode, Preset } from '@shifts/types';
 import { shiftsKeys } from './useShifts';
 import { presetMetaKeys } from './usePresetMeta';
@@ -10,6 +10,9 @@ interface UseApplyPresetOptions {
   endDate: string;
   mode: ApplyMode;
   userId?: string;
+  onConflictResolve?: (
+    conflicts: Conflict[]
+  ) => Promise<'overwrite' | 'skip' | 'cancel'>;
 }
 
 export function useApplyPreset() {

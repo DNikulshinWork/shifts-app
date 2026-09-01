@@ -10,3 +10,7 @@ out
 .turbo
 *.log
 .pnpm-store
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/

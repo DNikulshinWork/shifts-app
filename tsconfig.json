@@ -1,0 +1,21 @@
+{
+  "extends": "./apps/web/tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "vitest/globals"],
+    "moduleResolution": "bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "noEmit": true,
+    "ignoreDeprecations": "6.0"
+  },
+  "include": [
+    "playwright.config.ts",
+    "e2e/**/*.ts",
+    "vitest.config.ts",
+    "vitest.setup.ts"
+  ],
+  "exclude": ["node_modules"]
+}

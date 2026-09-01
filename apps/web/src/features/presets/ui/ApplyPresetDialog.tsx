@@ -5,12 +5,16 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Preset, ApplyMode } from '@shifts/types';
-import { useApplyPreset } from '@/shared/hooks';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/ui';
-import { Button } from '@/shared/ui';
-import { Input } from '@/shared/ui';
-import { Label } from '@/shared/ui';
+import { useApplyPreset, useShiftTypes } from '@/shared/hooks';
+import { previewPreset, Conflict } from '@/shared/lib/applyPreset';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  Button,
+  Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
@@ -18,7 +22,6 @@ import {
   SelectValue,
 } from '@/shared/ui';
 import { toast } from 'sonner';
-import { previewPreset, Conflict } from '@/shared/lib/applyPreset';
 import { format, parseISO } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -54,6 +57,7 @@ export function ApplyPresetDialog({
   onError,
 }: ApplyPresetDialogProps) {
   const applyMutation = useApplyPreset();
+  const { data: shiftTypes = [] } = useShiftTypes();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPreviewing, setIsPreviewing] = useState(false);
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
@@ -148,7 +152,6 @@ export function ApplyPresetDialog({
                 </p>
               )}
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="endDate">Конечная дата</Label>
               <Input id="endDate" type="date" {...register('endDate')} />
@@ -231,17 +234,25 @@ export function ApplyPresetDialog({
                     Обнаружены конфликты:
                   </div>
                   <div className="max-h-32 overflow-y-auto space-y-1">
-                    {conflicts.map((c) => (
-                      <div
-                        key={c.date}
-                        className="text-xs flex justify-between"
-                      >
-                        <span>
-                          {format(parseISO(c.date), 'd MMM', { locale: ru })}
-                        </span>
-                        <span>занято → {c.proposedTypeId.slice(0, 4)}...</span>
-                      </div>
-                    ))}
+                    {conflicts.map((c) => {
+                      const type = shiftTypes.find(
+                        (t) => t.id === c.proposedTypeId
+                      );
+                      const label = type
+                        ? `${type.emoji} ${type.name}`
+                        : c.proposedTypeId.slice(0, 4) + '...';
+                      return (
+                        <div
+                          key={c.date}
+                          className="text-xs flex justify-between"
+                        >
+                          <span>
+                            {format(parseISO(c.date), 'd MMM', { locale: ru })}
+                          </span>
+                          <span>занято → {label}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="mt-2">
                     <Label>Действие при конфликтах:</Label>

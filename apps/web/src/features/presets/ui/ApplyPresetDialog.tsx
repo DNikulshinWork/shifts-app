@@ -103,6 +103,7 @@ export function ApplyPresetDialog({
         emptyDays: result.emptyDays,
       });
     } catch (error) {
+      console.error('Preview error:', error);
       toast.error('Ошибка при предпросмотре');
     } finally {
       setIsPreviewing(false);
@@ -122,6 +123,7 @@ export function ApplyPresetDialog({
       onSuccess?.();
       onOpenChange(false);
     } catch (error) {
+      console.error('Apply error:', error);
       onError?.();
     } finally {
       setIsSubmitting(false);

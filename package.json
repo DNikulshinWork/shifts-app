@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
+    "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.6",
@@ -39,6 +40,7 @@
   "dependencies": {
     "camelcase-keys": "^10.0.2",
     "date-fns": "catalog:",
+    "next": "16.3.4",
     "snakecase-keys": "^9.0.2",
     "zustand": "catalog:"
   }

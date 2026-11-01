@@ -2,8 +2,8 @@ import type { NextConfig } from 'next';
 import path from 'path';
 import withPWA from '@ducanh2912/next-pwa';
 
-const repoName =
-  process.env.NEXT_PUBLIC_BASE_PATH?.replace(/^\//, '') || 'shifts-app';
+// '/' (режим своего домена) превращается в '', '/shifts-app' остаётся как есть
+const basePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? '').replace(/\/+$/, '');
 
 const allowedDevOrigins = process.env.ALLOWED_DEV_ORIGINS
   ? process.env.ALLOWED_DEV_ORIGINS.split(',')
@@ -15,8 +15,8 @@ const nextConfig: NextConfig = {
   output: 'export',
   trailingSlash: true,
   images: { unoptimized: true },
-  basePath: `/${repoName}`, // всегда, не только в prod
-  assetPrefix: `/${repoName}/`, // всегда
+  env: { NEXT_PUBLIC_BASE: basePath }, // нормализованный префикс для клиентского кода
+  ...(basePath && { basePath, assetPrefix: `${basePath}/` }),
   ...(allowedDevOrigins.length > 0 && { allowedDevOrigins }),
   turbopack: {
     root: path.join(__dirname, '../..'),

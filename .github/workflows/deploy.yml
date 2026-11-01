@@ -32,6 +32,7 @@ jobs:
       - name: Build
         run: pnpm build:gh-pages
         env:
+          NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
@@ -42,4 +43,6 @@ jobs:
           publish_dir: ./apps/web/out
           publish_branch: gh-pages
           force_orphan: true
+          # CNAME создаётся только в режиме своего домена; для /shifts-app значение пустое
+          cname: ${{ vars.NEXT_PUBLIC_BASE_PATH != '/shifts-app' && 'shifts.dnikulshin.ru' || '' }}
           commit_message: 'Deploy ${{ github.sha }}'

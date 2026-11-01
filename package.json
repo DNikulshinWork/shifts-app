@@ -7,7 +7,7 @@
     "dev": "pnpm --filter @shifts/web dev",
     "dev:clean": "pnpm --filter @shifts/web exec rm -rf .next && pnpm --filter @shifts/web dev",
     "build": "pnpm --filter @shifts/web build",
-    "build:gh-pages": "NEXT_PUBLIC_BASE_PATH=/shifts-app pnpm --filter @shifts/web build",
+    "build:gh-pages": "pnpm --filter @shifts/web build",
     "clean": "pnpm --filter @shifts/web exec rm -rf .next out",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
